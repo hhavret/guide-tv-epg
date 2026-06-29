@@ -42,7 +42,7 @@ jobs:
 
       - name: Générer gameone.xml
         working-directory: epg
-        run: npm run grab -- --channels=../channels.xml --output=../gameone.xml --days=2
+        run: npm run grab -- --channels=../channels.xml --output=../gameone.xml --days=7 --maxConnections=1
 
       - name: Sauvegarder gameone.xml
         run: |
