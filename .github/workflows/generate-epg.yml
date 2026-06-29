@@ -16,7 +16,7 @@ jobs:
       - name: Checkout ton dépôt
         uses: actions/checkout@v4
 
-      - name: Checkout iptv-org/epg
+      - name: Checkout iptv-org epg
         uses: actions/checkout@v4
         with:
           repository: iptv-org/epg
@@ -36,13 +36,13 @@ jobs:
           cat > channels.xml << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <channels>
-          <channel site="canalplus.com" site_id="#592" lang="fr" xmltv_id="GameOne.fr@SD">GAME ONE</channel>
+            <channel site="programme-tv.net" site_id="game-one-90" lang="fr" xmltv_id="GameOne.fr">Game One</channel>
           </channels>
           EOF
 
       - name: Générer gameone.xml
         working-directory: epg
-        run: npm run grab -- --channels=../channels.xml --output=../gameone.xml --days=7 --maxConnections=1
+        run: npm run grab -- --channels=../channels.xml --output=../gameone.xml --days=7 --maxConnections=1 --delay=10000
 
       - name: Sauvegarder gameone.xml
         run: |
