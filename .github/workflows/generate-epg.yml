@@ -1,1 +1,53 @@
+name: Generate Game One XMLTV
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  generate-gameone:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ton dépôt
+        uses: actions/checkout@v4
+
+      - name: Checkout iptv-org/epg
+        uses: actions/checkout@v4
+        with:
+          repository: iptv-org/epg
+          path: epg
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Installer les dépendances
+        working-directory: epg
+        run: npm install
+
+      - name: Créer channels.xml pour Game One
+        run: |
+          cat > channels.xml << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <channels>
+          <channel site="canalplus.com" site_id="#592" lang="fr" xmltv_id="GameOne.fr@SD">GAME ONE</channel>
+          </channels>
+          EOF
+
+      - name: Générer gameone.xml
+        working-directory: epg
+        run: npm run grab -- --channels=../channels.xml --output=../gameone.xml --days=2
+
+      - name: Sauvegarder gameone.xml
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add gameone.xml
+          git commit -m "Update Game One XMLTV" || echo "Aucun changement"
+          git push
